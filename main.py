@@ -28,9 +28,9 @@ try:
 except ImportError:
     from api.feedback import handler as FeedbackHandler
 
-class BTechXUnifiedHandler(SimpleHTTPRequestHandler):
+class BTechXUnifiedHandler(FeedbackHandler, SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=FRONTEND_DIR, **kwargs)
+        SimpleHTTPRequestHandler.__init__(self, *args, directory=FRONTEND_DIR, **kwargs)
 
     def do_OPTIONS(self):
         if self.path.startswith("/api/"):
@@ -49,16 +49,13 @@ class BTechXUnifiedHandler(SimpleHTTPRequestHandler):
         if self.path.startswith("/api/feedback"):
             FeedbackHandler.do_GET(self)
         else:
-            super().do_GET()
+            SimpleHTTPRequestHandler.do_GET(self)
 
     def do_POST(self):
         if self.path.startswith("/api/feedback"):
             FeedbackHandler.do_POST(self)
         else:
-            self.send_response(404)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(json.dumps({"error": "API route not found"}).encode("utf-8"))
+            self.send_json(404, {"error": "API route not found"})
 
 def main():
     print("=" * 66)
