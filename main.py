@@ -1,9 +1,9 @@
 """
 ===================================================================
-                BTechX Full-Stack Platform Runner
+           BTechX Multi-Threaded Platform Dev Server
 ===================================================================
-A unified local development server that serves the static frontend
-(from ./frontend) and powers the Python backend API (from ./backend).
+A high-performance threaded server that serves static frontend files 
+concurrently (from ./frontend) and handles Python backend requests (from ./backend).
 
 Usage:
     python main.py
@@ -12,7 +12,7 @@ Usage:
 import os
 import sys
 import json
-from http.server import SimpleHTTPRequestHandler, HTTPServer
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 # 1. Ensure root directory is on Python path
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -29,8 +29,16 @@ except ImportError:
     from api.feedback import handler as FeedbackHandler
 
 class BTechXUnifiedHandler(FeedbackHandler, SimpleHTTPRequestHandler):
+    protocol_version = "HTTP/1.1"
+
     def __init__(self, *args, **kwargs):
         SimpleHTTPRequestHandler.__init__(self, *args, directory=FRONTEND_DIR, **kwargs)
+
+    def end_headers(self):
+        # Send Connection: close to avoid socket hanging in keep-alive
+        self.send_header("Connection", "close")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        super().end_headers()
 
     def do_OPTIONS(self):
         if self.path.startswith("/api/"):
@@ -42,9 +50,14 @@ class BTechXUnifiedHandler(FeedbackHandler, SimpleHTTPRequestHandler):
             self.end_headers()
 
     def do_GET(self):
-        # Route "/" to landing page
-        if self.path == "/" or self.path == "":
+        # Strip query parameters for static routing
+        clean_path = self.path.split("?")[0]
+
+        # Route default root and favicon
+        if clean_path in ("", "/"):
             self.path = "/index.html"
+        elif clean_path == "/favicon.ico":
+            self.path = "/favicon.ico"
 
         if self.path.startswith("/api/feedback"):
             FeedbackHandler.do_GET(self)
@@ -59,19 +72,20 @@ class BTechXUnifiedHandler(FeedbackHandler, SimpleHTTPRequestHandler):
 
 def main():
     print("=" * 66)
-    print("           BTECHX ACADEMIC PLATFORM // UNIFIED RUNNER             ")
+    print("        BTECHX MULTI-THREADED PLATFORM RUNNER (CONCURRENT)        ")
     print("=" * 66)
     print(f" [+] Showcase Frontend:   http://localhost:{PORT}")
     print(f" [+] Student Dispatch:    http://localhost:{PORT}/feedback.html")
     print(f" [+] Python Backend API:  http://localhost:{PORT}/api/feedback")
     print("=" * 66)
-    print(" Serving from ./frontend and ./backend ...")
+    print(" Concurrent Multi-Threading: Active (Zero Blocking)")
     print(" Press Ctrl+C in this terminal to stop.")
     print("=" * 66)
 
     server_address = ("", PORT)
     try:
-        httpd = HTTPServer(server_address, BTechXUnifiedHandler)
+        httpd = ThreadingHTTPServer(server_address, BTechXUnifiedHandler)
+        httpd.daemon_threads = True
         httpd.serve_forever()
     except KeyboardInterrupt:
         print("\n [*] Stopping BTechX dev server...")
