@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback — BTechX</title>
+  <meta name="description" content="Share your suggestions, note requests, and feedback with the BTechX team in a Bauhaus-inspired interface.">
+  <link rel="icon" type="image/png" href="../logo.png?v=7">
+
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="feedback.css">
+</head>
+
+<body>
+  <!-- Bauhaus Blueprint Grid Background -->
+  <div class="bauhaus-blueprint-grid" aria-hidden="true"></div>
+
+  <!-- Bauhaus Ambient Primary Shapes -->
+  <div class="bauhaus-shape-accent shape-circle" aria-hidden="true"></div>
+  <div class="bauhaus-shape-accent shape-square" aria-hidden="true"></div>
+
+  <!-- ══ Bauhaus Navbar ══ -->
+  <header class="bauhaus-navbar">
+    <div class="nav-layout">
+      <a href="landing.html" class="nav-return-btn" title="Return to Showcase">
+        <i class="fas fa-arrow-left"></i>
+        <span>Showcase</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ══ Bauhaus Stage (Single Viewport, Unscrollable) ══ -->
+  <main class="bauhaus-stage">
+
+    <!-- Top Architectural Header -->
+    <div class="bauhaus-header">
+      <div class="header-left-col">
+        <span class="bauhaus-index-badge">01 // FORM</span>
+        <h1 class="bauhaus-heading">
+          Student <span class="heading-accent">Dispatch.</span>
+        </h1>
+      </div>
+
+      <div class="header-right-col">
+        <span class="tag-dot"></span>
+        <span class="tag-caption">Active Transmission Channel &bull; Reviewed Daily</span>
+      </div>
+    </div>
+
+    <!-- ══ Bauhaus Grid Composition ══ -->
+    <div class="bauhaus-grid">
+
+      <!-- Left Panel: Main Feedback Transmission Form -->
+      <section class="bauhaus-panel bauhaus-form-panel" id="formPanel">
+        <div class="panel-subhead">
+          <span class="panel-title">Transmit Feedback</span>
+          <span class="panel-ref">[PROTOCOL // 01]</span>
+        </div>
+
+        <form id="feedbackForm" onsubmit="handleFeedbackSubmit(event)">
+          <div class="input-row-grid">
+            <!-- Field 1: Name -->
+            <div class="bauhaus-field">
+              <label for="userName" class="field-label">
+                <span class="field-num">01.</span> Name
+              </label>
+              <input 
+                type="text" 
+                id="userName" 
+                name="name" 
+                class="bauhaus-input" 
+                placeholder="Full student name" 
+                required
+                autocomplete="name"
+              >
+            </div>
+
+            <!-- Field 2: Email -->
+            <div class="bauhaus-field">
+              <label for="userEmail" class="field-label">
+                <span class="field-num">02.</span> Email
+              </label>
+              <input 
+                type="email" 
+                id="userEmail" 
+                name="email" 
+                class="bauhaus-input" 
+                placeholder="student@university.edu" 
+                required
+                autocomplete="email"
+              >
+            </div>
+          </div>
+
+          <!-- Field 3: Content Box -->
+          <div class="bauhaus-field full">
+            <label for="userMessage" class="field-label">
+              <span class="field-num">03.</span> Message / Suggestions
+            </label>
+            <textarea 
+              id="userMessage" 
+              name="message" 
+              class="bauhaus-textarea" 
+              placeholder="Enter your feedback, syllabus notes correction, or paper generation requests..." 
+              required
+              maxlength="1000"
+              oninput="updateCharTally(this)"
+            ></textarea>
+            <div class="char-tally" id="charTally">0 / 1000</div>
+          </div>
+
+          <!-- Primary Submit Button -->
+          <button type="submit" class="btn-bauhaus-submit" id="submitBtn">
+            <span>Transmit Feedback</span>
+            <div class="btn-icon-block">
+              <i class="fas fa-arrow-right"></i>
+            </div>
+          </button>
+        </form>
+
+        <!-- Confirmation State (Replaces Form on Submission) -->
+        <div class="bauhaus-success-panel" id="successPanel">
+          <div class="success-badge">
+            <i class="fas fa-check"></i>
+          </div>
+          <h2 class="success-headline">Transmission Confirmed</h2>
+          <p class="success-message">
+            Your dispatch has been successfully recorded into the BTechX review queue.
+          </p>
+          <button type="button" class="btn-bauhaus-reset" onclick="resetFeedbackForm()">
+            [ Transmit Another ]
+          </button>
+        </div>
+      </section>
+
+      <!-- Right Column: Functional Bauhaus Blocks -->
+      <aside class="bauhaus-aside">
+        <!-- Block 1: Function -->
+        <div class="bauhaus-block accent-yellow">
+          <span class="block-index">01</span>
+          <div class="block-content">
+            <div class="block-header-wrap">
+              <h3 class="block-title">Function</h3>
+              <span class="block-tag yellow">Academic</span>
+            </div>
+            <p class="block-desc">
+              Direct student input pipeline designed to refine semester modules, formula sheets, and past question banks.
+            </p>
+          </div>
+        </div>
+
+        <!-- Block 2: Turnaround -->
+        <div class="bauhaus-block accent-red">
+          <span class="block-index">02</span>
+          <div class="block-content">
+            <div class="block-header-wrap">
+              <h3 class="block-title">Turnaround</h3>
+              <span class="block-tag red">&lt; 24h</span>
+            </div>
+            <p class="block-desc">
+              All reported errors or missing notes are prioritized directly into weekly deployment and verification cycles.
+            </p>
+          </div>
+        </div>
+
+        <!-- Block 3: Integrity -->
+        <div class="bauhaus-block accent-green">
+          <span class="block-index">03</span>
+          <div class="block-content">
+            <div class="block-header-wrap">
+              <h3 class="block-title">Integrity</h3>
+              <span class="block-tag green">Zero Spam</span>
+            </div>
+            <p class="block-desc">
+              No commercial ads, third-party trackers, or marketing emails. Contact info is exclusively used for study resource follow-ups.
+            </p>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <script>
+    // Character Tally
+    function updateCharTally(textarea) {
+      const tally = document.getElementById('charTally');
+      if (tally) {
+        tally.textContent = `${textarea.value.length} / 1000`;
+      }
+    }
+
+    // Submit Handling with Python Backend Integration
+    async function handleFeedbackSubmit(e) {
+      e.preventDefault();
+
+      const form = document.getElementById('feedbackForm');
+      const panel = document.getElementById('successPanel');
+      const submitBtn = document.getElementById('submitBtn');
+
+      submitBtn.disabled = true;
+      submitBtn.querySelector('span').textContent = 'Transmitting...';
+
+      const payload = {
+        name: document.getElementById('userName').value.trim(),
+        email: document.getElementById('userEmail').value.trim(),
+        message: document.getElementById('userMessage').value.trim(),
+        subject: 'BTechX Student Feedback'
+      };
+
+      // 1. Client-side local backup
+      try {
+        const feedbackList = JSON.parse(localStorage.getItem('btx_feedbacks') || '[]');
+        feedbackList.push({
+          ...payload,
+          timestamp: new Date().toISOString()
+        });
+        localStorage.setItem('btx_feedbacks', JSON.stringify(feedbackList));
+      } catch (err) {}
+
+      // 2. Transmit to Python Backend API
+      let endpoint = '/api/feedback';
+      if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '8000')) {
+        endpoint = 'http://localhost:8000/api/feedback';
+      }
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        console.log('[BTechX Dispatch Result]:', result);
+      } catch (netErr) {
+        console.warn('[BTechX Backend Notice] Running in offline/fallback mode:', netErr.message);
+      }
+
+      setTimeout(() => {
+        form.style.display = 'none';
+        panel.classList.add('active');
+        submitBtn.disabled = false;
+        submitBtn.querySelector('span').textContent = 'Transmit Feedback';
+      }, 300);
+    }
+
+    // Reset Form for another transmission
+    function resetFeedbackForm() {
+      const form = document.getElementById('feedbackForm');
+      const panel = document.getElementById('successPanel');
+      form.reset();
+      updateCharTally(document.getElementById('userMessage'));
+      panel.classList.remove('active');
+      form.style.display = 'block';
+    }
+  </script>
+</body>
+
+</html>
