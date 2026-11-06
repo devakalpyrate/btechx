@@ -1,35 +1,27 @@
 {
-  "version": 2,
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "frontend": {
+      "root": "frontend"
+    },
+    "backend": {
+      "root": "backend",
+      "runtime": "python",
+      "entrypoint": "feedback.py"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/",
-      "destination": "/frontend/landing.html"
-    },
-    {
-      "source": "/(landing|landing.html)",
-      "destination": "/frontend/landing.html"
-    },
-    {
-      "source": "/(feedback|feedback.html)",
-      "destination": "/frontend/feedback.html"
+      "destination": {
+        "service": "backend"
+      }
     },
     {
       "source": "/(.*)",
-      "destination": "/frontend/$1"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
-      ]
+      "destination": {
+        "service": "frontend"
+      }
     }
   ]
 }
