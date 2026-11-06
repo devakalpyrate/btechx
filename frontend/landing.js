@@ -348,10 +348,11 @@ const STORY_CONFIG = [
 ];
 
 let currentStorySlide = 0;
-let isSlidePlaying = false; // By default paused as requested
+let isSlidePlaying = true; // Active presentation timer
 let slideProgressTimer = null;
-const SLIDE_DURATION = 5000; // 5 seconds per slide
+const SLIDE_DURATION = 4500; // 4.5 seconds per slide
 let slideStartTime = Date.now();
+let isWheelThrottled = false;
 
 function goToStorySlide(index) {
   if (index < 0) index = STORY_CONFIG.length - 1;
@@ -386,8 +387,19 @@ function goToStorySlide(index) {
 }
 window.goToStorySlide = goToStorySlide;
 
+function autoAdvanceToNextSection() {
+  const nextSection = document.getElementById("papers");
+  if (nextSection) {
+    nextSection.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
 function nextStorySlide() {
-  goToStorySlide(currentStorySlide + 1);
+  if (currentStorySlide >= STORY_CONFIG.length - 1) {
+    autoAdvanceToNextSection();
+  } else {
+    goToStorySlide(currentStorySlide + 1);
+  }
 }
 window.nextStorySlide = nextStorySlide;
 
@@ -415,7 +427,11 @@ function resetAndStartProgress() {
     if (activeFill) activeFill.style.width = `${pct}%`;
     if (elapsed >= SLIDE_DURATION) {
       clearInterval(slideProgressTimer);
-      nextStorySlide();
+      if (currentStorySlide >= STORY_CONFIG.length - 1) {
+        autoAdvanceToNextSection();
+      } else {
+        nextStorySlide();
+      }
     }
   }, 50);
 }
@@ -425,7 +441,7 @@ function toggleSlideAutoplay() {
   const playBtn = document.getElementById("slidePlayPauseBtn");
   if (playBtn) {
     playBtn.innerHTML = isSlidePlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
-    playBtn.title = isSlidePlaying ? "Pause Slideshow" : "Start Slideshow (Auto-advance)";
+    playBtn.title = isSlidePlaying ? "Pause Presentation" : "Play Presentation";
   }
 
   if (isSlidePlaying) {
@@ -437,16 +453,17 @@ function toggleSlideAutoplay() {
 window.toggleSlideAutoplay = toggleSlideAutoplay;
 
 function setupStoryScrollTimeline() {
+  const section = document.getElementById("interactive-tour");
   const container = document.getElementById("asymmetricTour");
   const prevBtn = document.getElementById("slidePrevBtn");
   const nextBtn = document.getElementById("slideNextBtn");
   const playPauseBtn = document.getElementById("slidePlayPauseBtn");
 
-  if (!container) return;
+  if (!section || !container) return;
 
   if (playPauseBtn) {
     playPauseBtn.innerHTML = isSlidePlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
-    playPauseBtn.title = isSlidePlaying ? "Pause Slideshow" : "Start Slideshow (Auto-advance)";
+    playPauseBtn.title = isSlidePlaying ? "Pause Presentation" : "Play Presentation";
     playPauseBtn.addEventListener("click", toggleSlideAutoplay);
   }
 
@@ -466,20 +483,90 @@ function setupStoryScrollTimeline() {
     }
   });
 
-  // Mouse wheel scroll to cycle slides smoothly
-  let wheelTimeout = null;
-  container.addEventListener("wheel", (e) => {
-    if (Math.abs(e.deltaY) > 20) {
-      if (wheelTimeout) return;
-      wheelTimeout = setTimeout(() => { wheelTimeout = null; }, 400);
+  // IntersectionObserver: When section arrives in viewport, start presentation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (!isSlidePlaying) {
+          isSlidePlaying = true;
+          if (playPauseBtn) playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+          resetAndStartProgress();
+        }
+      }
+    });
+  }, { threshold: 0.35 });
+  observer.observe(section);
 
-      if (e.deltaY > 0) {
-        nextStorySlide();
+  // Presentation Wheel Interception:
+  // When user is over this section, page scroll is locked so wheel advances presentation slides.
+  // Once user reaches the last slide (or slide 0 when scrolling up), scroll continues naturally.
+  function handlePresentationWheel(e) {
+    const rect = section.getBoundingClientRect();
+    const inView = rect.top <= 120 && rect.bottom >= window.innerHeight * 0.45;
+    if (!inView) return;
+
+    if (Math.abs(e.deltaY) < 18) return;
+
+    if (e.deltaY > 0) {
+      // Scrolling DOWN
+      if (currentStorySlide < STORY_CONFIG.length - 1) {
+        e.preventDefault(); // Lock page scroll!
+        if (isWheelThrottled) return;
+        isWheelThrottled = true;
+        goToStorySlide(currentStorySlide + 1);
+        setTimeout(() => { isWheelThrottled = false; }, 420);
       } else {
-        prevStorySlide();
+        // Last slide: allow natural page scroll down to next section
+      }
+    } else {
+      // Scrolling UP
+      if (currentStorySlide > 0) {
+        e.preventDefault(); // Lock page scroll!
+        if (isWheelThrottled) return;
+        isWheelThrottled = true;
+        goToStorySlide(currentStorySlide - 1);
+        setTimeout(() => { isWheelThrottled = false; }, 420);
+      } else {
+        // First slide: allow natural page scroll up to hero
       }
     }
+  }
+
+  section.addEventListener("wheel", handlePresentationWheel, { passive: false });
+
+  // Touch Swipe for mobile devices
+  let touchStartY = 0;
+  section.addEventListener("touchstart", (e) => {
+    if (e.touches && e.touches.length > 0) {
+      touchStartY = e.touches[0].clientY;
+    }
   }, { passive: true });
+
+  section.addEventListener("touchmove", (e) => {
+    if (!e.touches || e.touches.length === 0) return;
+    const diff = touchStartY - e.touches[0].clientY;
+    const rect = section.getBoundingClientRect();
+    const inView = rect.top <= 120 && rect.bottom >= window.innerHeight * 0.45;
+    if (!inView) return;
+
+    if (Math.abs(diff) > 40) {
+      if (diff > 0 && currentStorySlide < STORY_CONFIG.length - 1) {
+        e.preventDefault();
+        if (!isWheelThrottled) {
+          isWheelThrottled = true;
+          goToStorySlide(currentStorySlide + 1);
+          setTimeout(() => { isWheelThrottled = false; }, 450);
+        }
+      } else if (diff < 0 && currentStorySlide > 0) {
+        e.preventDefault();
+        if (!isWheelThrottled) {
+          isWheelThrottled = true;
+          goToStorySlide(currentStorySlide - 1);
+          setTimeout(() => { isWheelThrottled = false; }, 450);
+        }
+      }
+    }
+  }, { passive: false });
 
   // Initial slide load
   goToStorySlide(0);

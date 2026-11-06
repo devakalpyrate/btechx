@@ -1060,6 +1060,7 @@ body::-webkit-scrollbar {
   border-top: 1px solid var(--border-stone);
   max-width: 1240px;
   margin: 0 auto;
+  scroll-margin-top: 70px;
 }
 
 .tour-header-center {
