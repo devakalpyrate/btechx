@@ -1,11 +1,6 @@
-/* ═════════════════════════════════════════════════════════════════
-   BAUHAUS UI — BTechX Feedback Portal
-   Ethos: Form Follows Function • Pure Geometry • Primary Accents
-   ═════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Bauhaus Core Palette */
-  --bauhaus-black: #0c0e0c;
+    --bauhaus-black: #0c0e0c;
   --bauhaus-dark: #141714;
   --bauhaus-dark-2: #1b1f1b;
   --bauhaus-paper: #f7f6f0;
@@ -36,8 +31,7 @@
 
 html, body {
   height: 100vh;
-  overflow: hidden; /* Strict unscrollable viewport */
-}
+  overflow: hidden; }
 
 body {
   background-color: var(--bauhaus-black);
@@ -49,7 +43,6 @@ body {
   position: relative;
 }
 
-/* ── Bauhaus Subtle Grid Background (Architectural Blueprint) ── */
 .bauhaus-blueprint-grid {
   position: fixed;
   inset: 0;
@@ -61,7 +54,6 @@ body {
   background-size: 40px 40px;
 }
 
-/* Geometric Ambient Shapes */
 .bauhaus-shape-accent {
   position: absolute;
   pointer-events: none;
@@ -88,7 +80,6 @@ body {
   filter: blur(120px);
 }
 
-/* ── Bauhaus Navbar (Minimal Architectural Header) ── */
 .bauhaus-navbar {
   flex-shrink: 0;
   padding: 14px 32px;
@@ -120,7 +111,6 @@ body {
   border-radius: 6px;
 }
 
-/* Iconic Bauhaus Triad: Circle, Triangle, Square */
 .bauhaus-geometric-triad {
   display: flex;
   align-items: center;
@@ -179,7 +169,6 @@ body {
   transform: translateY(-1px);
 }
 
-/* ── Viewport Container ── */
 .bauhaus-stage {
   flex: 1;
   max-width: 1200px;
@@ -193,7 +182,6 @@ body {
   z-index: 10;
 }
 
-/* ── Bauhaus Header Row ── */
 .bauhaus-header {
   display: flex;
   align-items: flex-end;
@@ -235,7 +223,6 @@ body {
   color: var(--bauhaus-blue);
 }
 
-/* Concise Top-Right Tag */
 .header-right-col {
   display: flex;
   align-items: center;
@@ -262,7 +249,6 @@ body {
   white-space: nowrap;
 }
 
-/* ══ BAUHAUS COMPOSITION GRID ══ */
 .bauhaus-grid {
   display: grid;
   grid-template-columns: 1.45fr 1fr;
@@ -270,7 +256,6 @@ body {
   align-items: stretch;
 }
 
-/* ── The Main Form Cell (Bauhaus Functional Engine) ── */
 .bauhaus-panel {
   background: var(--bauhaus-dark);
   border: 2px solid var(--bauhaus-border);
@@ -313,7 +298,6 @@ body {
   color: var(--text-secondary);
 }
 
-/* Input Fields Grid */
 .input-row-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -352,8 +336,7 @@ body {
   width: 100%;
   background: #0d0f0d;
   border: 1.5px solid var(--bauhaus-border);
-  border-radius: 0; /* Sharp Bauhaus corners */
-  color: var(--text-primary);
+  border-radius: 0;   color: var(--text-primary);
   font-family: var(--font-body);
   font-size: 13.5px;
   padding: 10px 14px;
@@ -387,7 +370,6 @@ body {
   margin-top: 4px;
 }
 
-/* Bauhaus Primary Submit Button */
 .btn-bauhaus-submit {
   display: flex;
   align-items: center;
@@ -431,7 +413,6 @@ body {
   font-size: 11px;
 }
 
-/* Confirmation Success State */
 .bauhaus-success-panel {
   display: none;
   padding: 30px 20px;
@@ -492,7 +473,6 @@ body {
   border-color: #000000;
 }
 
-/* ── Right Column: Stacked Bauhaus Information Blocks ── */
 .bauhaus-aside {
   display: flex;
   flex-direction: column;
@@ -586,7 +566,6 @@ body {
   line-height: 1.45;
 }
 
-/* Responsive (Mobile/Tablet allows smooth flow) */
 @media (max-width: 860px) {
   html, body {
     height: auto;

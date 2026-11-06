@@ -1,12 +1,8 @@
-/**
- * ═════════════════════════════════════════════════════════════════
- * BTechX Standalone Landing Page Engine
- * ═════════════════════════════════════════════════════════════════
- */
 
-// ── Complete Database of BTechX Subjects & Verified Modules ──
+
+
 const BTECHX_SUBJECTS = [
-  // 1st Year
+  
   {
     id: "math1",
     year: "1st Year",
@@ -98,7 +94,7 @@ const BTECHX_SUBJECTS = [
     ]
   },
 
-  // 2nd Year
+  
   {
     id: "chemistry",
     year: "2nd Year",
@@ -191,7 +187,7 @@ const BTECHX_SUBJECTS = [
   }
 ];
 
-// ── DOM Initialization ──
+
 document.addEventListener("DOMContentLoaded", () => {
   renderCatalogGrids();
   setupHeroLiveSearch();
@@ -205,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupCustomScrollbar();
 });
 
-// ── 1. The Original BTechX Hero Search Box Logic ──
+
 function setupHeroLiveSearch() {
   const searchInput = document.getElementById("subjectSearchInput");
   const suggestionsBox = document.getElementById("searchSuggestions");
@@ -281,7 +277,7 @@ function hideHeroSearch() {
   if (box) box.classList.remove("show");
 }
 
-// ── 2. Render Catalog Grids ──
+
 function renderCatalogGrids() {
   const gridYear1 = document.getElementById("gridYear1");
   const gridYear2 = document.getElementById("gridYear2");
@@ -316,7 +312,7 @@ function createKiviSubjectCard(subject) {
   `;
 }
 
-// ── 3. Year Tabs Switching ──
+
 function switchYear(yearId, tabButton) {
   document.querySelectorAll(".year-group").forEach(el => el.classList.remove("active"));
   document.querySelectorAll(".kivi-tab").forEach(el => el.classList.remove("active"));
@@ -326,8 +322,8 @@ function switchYear(yearId, tabButton) {
   if (tabButton) tabButton.classList.add("active");
 }
 
-// ── 4. Story Scroll Timeline (Screenshot 2) ──
-// ── 4. Asymmetric Interactive Slideshow Showcase Engine ──
+
+
 const STORY_CONFIG = [
   {
     title: '<i class="fas fa-book-open"></i> Notes • Mathematics — I',
@@ -348,9 +344,9 @@ const STORY_CONFIG = [
 ];
 
 let currentStorySlide = 0;
-let isSlidePlaying = false; // BY DEFAULT OFF as requested
+let isSlidePlaying = false; 
 let slideProgressTimer = null;
-const SLIDE_DURATION = 5000; // 5 seconds per slide if user manually plays
+const SLIDE_DURATION = 5000; 
 let slideStartTime = Date.now();
 let isWheelThrottled = false;
 
@@ -361,28 +357,28 @@ function goToStorySlide(index) {
 
   const cfg = STORY_CONFIG[index];
 
-  // Update Mac window title & counter
+  
   const titleEl = document.getElementById("macWinTitle");
   const counterEl = document.getElementById("slideCounter");
   if (titleEl) titleEl.innerHTML = cfg.title;
   if (counterEl) counterEl.textContent = `0${index + 1} / 04`;
 
-  // Update Canvas panel active state
+  
   document.querySelectorAll(".canvas-panel").forEach(p => p.classList.remove("active"));
   const activePanel = document.getElementById(cfg.panelId);
   if (activePanel) activePanel.classList.add("active");
 
-  // Update Asymmetric Selector Cards
+  
   document.querySelectorAll(".asymmetric-box-card").forEach((card, idx) => {
     card.classList.toggle("active", idx === index);
   });
 
-  // Update Dots
+  
   document.querySelectorAll(".step-dot").forEach((dot, idx) => {
     dot.classList.toggle("active", idx === index);
   });
 
-  // Reset Progress Fill
+  
   resetAndStartProgress();
 }
 window.goToStorySlide = goToStorySlide;
@@ -391,7 +387,7 @@ function nextStorySlide() {
   if (currentStorySlide < STORY_CONFIG.length - 1) {
     goToStorySlide(currentStorySlide + 1);
   } else {
-    // At last slide, do not auto-scroll page. Loop or stay
+    
     goToStorySlide(0);
   }
 }
@@ -405,7 +401,7 @@ window.prevStorySlide = prevStorySlide;
 function resetAndStartProgress() {
   clearInterval(slideProgressTimer);
 
-  // Reset all progress bars
+  
   document.querySelectorAll(".box-progress-fill").forEach(fill => {
     fill.style.width = "0%";
   });
@@ -456,7 +452,7 @@ function setupStoryScrollTimeline() {
 
   if (!container) return;
 
-  // Initialize Play/Pause button with Play icon (since default is OFF)
+  
   if (playPauseBtn) {
     playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
     playPauseBtn.title = "Play Presentation";
@@ -466,7 +462,7 @@ function setupStoryScrollTimeline() {
   if (prevBtn) prevBtn.addEventListener("click", prevStorySlide);
   if (nextBtn) nextBtn.addEventListener("click", nextStorySlide);
 
-  // Pause autoplay on mouse hover so student can inspect
+  
   container.addEventListener("mouseenter", () => {
     if (isSlidePlaying) {
       clearInterval(slideProgressTimer);
@@ -479,39 +475,39 @@ function setupStoryScrollTimeline() {
     }
   });
 
-  // Presentation Wheel: ONLY active when mouse is directly over the presentation container (#asymmetricTour)
-  // This avoids any scroll jank on the rest of the page.
+  
+  
   function handleContainerWheel(e) {
     if (Math.abs(e.deltaY) < 18) return;
 
     if (e.deltaY > 0) {
-      // User is scrolling DOWN over the presentation cards/window
+      
       if (currentStorySlide < STORY_CONFIG.length - 1) {
-        e.preventDefault(); // Stay on presentation and advance slide
+        e.preventDefault(); 
         if (isWheelThrottled) return;
         isWheelThrottled = true;
         goToStorySlide(currentStorySlide + 1);
         setTimeout(() => { isWheelThrottled = false; }, 380);
       } else {
-        // At last slide (Spotlight): allow natural downward page scroll
+        
       }
     } else {
-      // User is scrolling UP over the presentation cards/window
+      
       if (currentStorySlide > 0) {
-        e.preventDefault(); // Stay on presentation and retreat slide
+        e.preventDefault(); 
         if (isWheelThrottled) return;
         isWheelThrottled = true;
         goToStorySlide(currentStorySlide - 1);
         setTimeout(() => { isWheelThrottled = false; }, 380);
       } else {
-        // At first slide (Notes): allow natural upward page scroll
+        
       }
     }
   }
 
   container.addEventListener("wheel", handleContainerWheel, { passive: false });
 
-  // Touch swipe support specifically over container
+  
   let touchStartY = 0;
   container.addEventListener("touchstart", (e) => {
     if (e.touches && e.touches.length > 0) {
@@ -542,11 +538,11 @@ function setupStoryScrollTimeline() {
     }
   }, { passive: false });
 
-  // Initial slide load (by default stopped/paused)
+  
   goToStorySlide(0);
 }
 
-// ── 5.0 Interactive Canvas Pixel Reveal Torch Effect ──
+
 function setupPixelRevealCanvas() {
   const hero = document.querySelector(".kivi-collage-hero");
   const canvas = document.querySelector("#pixelReveal");
@@ -587,12 +583,12 @@ function setupPixelRevealCanvas() {
   function draw() {
     ctx.clearRect(0, 0, width, height);
 
-    // Keep the center (where the title & Enter button sit) transparent and clear
+    
     const centerGrad = ctx.createRadialGradient(
       width / 2, height * 0.44, 20,
       width / 2, height * 0.44, Math.max(width, height) * 0.65
     );
-    centerGrad.addColorStop(0, "rgba(0, 5, 2, 0.08)"); // Highly transparent in the center
+    centerGrad.addColorStop(0, "rgba(0, 5, 2, 0.08)"); 
     centerGrad.addColorStop(0.45, `rgba(0, 5, 2, ${DARKNESS * 0.7})`);
     centerGrad.addColorStop(1, `rgba(0, 5, 2, ${DARKNESS})`);
 
@@ -604,7 +600,7 @@ function setupPixelRevealCanvas() {
     const cx = Math.floor(mouseX / PIXEL) * PIXEL;
     const cy = Math.floor(mouseY / PIXEL) * PIXEL;
 
-    // Remove darkness in pixelated blocks.
+    
     ctx.globalCompositeOperation = "destination-out";
 
     const startX = Math.floor((cx - RADIUS) / PIXEL) * PIXEL;
@@ -624,7 +620,7 @@ function setupPixelRevealCanvas() {
       }
     }
 
-    // Add subtle lime pixels around the illuminated area.
+    
     ctx.globalCompositeOperation = "source-over";
 
     for (let y = startY; y <= cy + RADIUS; y += PIXEL) {
@@ -668,7 +664,7 @@ function setupPixelRevealCanvas() {
   resize();
 }
 
-// ── 5. Floating Collage Subtle Parallax (Screenshot 1) ──
+
 function setupCollageParallax() {
   const collage = document.querySelector(".kivi-collage-hero");
   const cards = document.querySelectorAll("[data-tilt-item]");
@@ -696,13 +692,13 @@ function setupCollageParallax() {
   });
 }
 
-// ── 5.1 Magnetic Letter Repulsion Physics for Enter Button ──
+
 function setupEnterButtonRepulsion() {
   const btn = document.querySelector(".btn-enter");
   const chars = document.querySelectorAll(".btn-enter .repel-char");
   if (!btn || !chars.length) return;
 
-  // Initialize state per character
+  
   const charStates = Array.from(chars).map(el => ({
     el,
     currX: 0,
@@ -717,16 +713,16 @@ function setupEnterButtonRepulsion() {
   let mouseY = -9999;
   let isNearButton = false;
 
-  const letterRepelRadius = 65; // Repulsion field radius around each letter
-  const maxLetterPush = 16;     // Max displacement in px
-  const maxRotation = 14;       // Max tilt angle in degrees
+  const letterRepelRadius = 65; 
+  const maxLetterPush = 16;     
+  const maxRotation = 14;       
 
   function onMouseMove(e) {
     mouseX = e.clientX;
     mouseY = e.clientY;
 
     const btnRect = btn.getBoundingClientRect();
-    // Check if cursor is within the broader button neighborhood (80px margin)
+    
     const margin = 80;
     if (
       mouseX >= btnRect.left - margin &&
@@ -740,7 +736,7 @@ function setupEnterButtonRepulsion() {
         const charCenterX = rect.left + rect.width / 2 - state.currX;
         const charCenterY = rect.top + rect.height / 2 - state.currY;
 
-        const dx = charCenterX - mouseX; // Vector pointing away from mouse
+        const dx = charCenterX - mouseX; 
         const dy = charCenterY - mouseY;
         const dist = Math.hypot(dx, dy);
 
@@ -767,7 +763,7 @@ function setupEnterButtonRepulsion() {
 
   function update() {
     charStates.forEach(state => {
-      // Spring damping interpolation
+      
       state.currX += (state.targetX - state.currX) * 0.14;
       state.currY += (state.targetY - state.currY) * 0.14;
       state.currRot += (state.targetRot - state.currRot) * 0.14;
@@ -805,7 +801,7 @@ function setupEnterButtonRepulsion() {
   requestAnimationFrame(update);
 }
 
-// ── 6. Scroll Progress Bar & Nav Links Tracking ──
+
 function setupScrollProgressTracker() {
   const progressBar = document.getElementById("scrollProgress");
   const menuLinks = document.querySelectorAll(".navbar-links .nav-link");
@@ -852,7 +848,7 @@ function scrollToSection(id) {
   }
 }
 
-// ── 7. Apps Popover Toggle ──
+
 function setupAppsPopover() {
   const btn = document.getElementById("appsToggleBtn");
   const popover = document.getElementById("appsPopover");
@@ -871,7 +867,7 @@ function setupAppsPopover() {
   }
 }
 
-// ── 8. FAQ Accordion ──
+
 function toggleFaq(itemElement) {
   const isOpen = itemElement.classList.contains("open");
   document.querySelectorAll(".faq-item").forEach(item => item.classList.remove("open"));
@@ -880,7 +876,7 @@ function toggleFaq(itemElement) {
   }
 }
 
-// ── 9. Keyboard Shortcuts ──
+
 function setupKeyboardShortcuts() {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {

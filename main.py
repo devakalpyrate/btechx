@@ -14,7 +14,6 @@ import sys
 import json
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
-# 1. Ensure root directory is on Python path
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
@@ -22,7 +21,6 @@ if PROJECT_ROOT not in sys.path:
 FRONTEND_DIR = os.path.join(PROJECT_ROOT, "frontend")
 PORT = 8000
 
-# 2. Import backend handler
 try:
     from backend.feedback import handler as FeedbackHandler
 except ImportError:
@@ -35,7 +33,6 @@ class BTechXUnifiedHandler(FeedbackHandler, SimpleHTTPRequestHandler):
         SimpleHTTPRequestHandler.__init__(self, *args, directory=FRONTEND_DIR, **kwargs)
 
     def end_headers(self):
-        # Send Connection: close to avoid socket hanging in keep-alive
         self.send_header("Connection", "close")
         self.send_header("Access-Control-Allow-Origin", "*")
         super().end_headers()
@@ -50,10 +47,8 @@ class BTechXUnifiedHandler(FeedbackHandler, SimpleHTTPRequestHandler):
             self.end_headers()
 
     def do_GET(self):
-        # Strip query parameters for static routing
         clean_path = self.path.split("?")[0]
 
-        # Route default root and favicon
         if clean_path in ("", "/"):
             self.path = "/index.html"
         elif clean_path == "/favicon.ico":

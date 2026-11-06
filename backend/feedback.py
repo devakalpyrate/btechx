@@ -9,7 +9,6 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-# Load .env locally if present
 _current_dir = os.path.dirname(os.path.abspath(__file__))
 _project_root = os.path.dirname(_current_dir)
 _possible_env_paths = [
@@ -218,7 +217,6 @@ class handler(BaseHTTPRequestHandler):
 
             timestamp = get_current_ist_time()
 
-            # 1. Log locally to feedbacks.json
             log_feedback_locally({
                 "name": name,
                 "email": email,
@@ -227,7 +225,6 @@ class handler(BaseHTTPRequestHandler):
                 "timestamp": timestamp
             })
 
-            # 2. Transmit via SMTP Email
             email_sent = False
             try:
                 send_feedback_email(name, email, message, subject)
