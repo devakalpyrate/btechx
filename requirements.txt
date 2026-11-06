@@ -1,0 +1,2 @@
+# Python Standard Library is used (smtplib, ssl, http.server, json, email)
+# Add any optional third-party packages below if needed in the future
